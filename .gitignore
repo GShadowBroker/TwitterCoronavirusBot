@@ -1,3 +1,4 @@
 /node_modules
 .env
 test.rest
+test.js
