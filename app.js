@@ -3,6 +3,7 @@
 const express = require('express');
 const Twit = require('twit');
 const config = require('./config');
+const wakeUpDyno = require('./wakeUpDyno');
 const axios = require('axios');
 const moment = require('moment');
 require('./node_modules/moment/locale/pt-br');
@@ -76,6 +77,8 @@ function sendReply (tweet) {
             })
             .catch(err => console.log(err));
     }
+    console.log(`Command {${uf}} not recognized`);
+    return false
 }
 
 function isTweetExactMatch (text) {
@@ -91,4 +94,7 @@ function onTweeted () {
     console.log("Bot has replied to a user successfully.");
 }
 
-app.listen(port, () => console.log(`Running server on http://127.0.0.1:${port}`));
+app.listen(port, () => {
+    console.log(`Running server on http://127.0.0.1:${port}`);
+    wakeUpDyno(config.dynoUrl);
+});
