@@ -4,8 +4,9 @@
   "description": "O bot que educa sobre o atual quadro pandêmico no Brasil",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "nodemon testApp.js",
-    "launch": "nodemon app.js"
+    "dev": "nodemon app.js"
   },
   "author": "Gledyson",
   "license": "ISC",
