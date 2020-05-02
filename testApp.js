@@ -6,7 +6,7 @@ const config = require('./config');
 const axios = require('axios');
 const moment = require('moment');
 require('moment/locale/pt-BR');
-const port = 3000;
+const port = 8000;
 
 const app = express();
 
@@ -24,14 +24,31 @@ function onAuthenticated (err) {
     } else {
         console.log('Authentication successful!');
 
-        let stream = T.stream('statuses/filter', { track: config.termsToTrack, tweet_mode: 'extended'});
+        let stream = T.stream('statuses/filter', { track: '@CoronavirusBrB1'}); //removed tweet_mode: 'extended'
         stream.on('tweet', (tweet) => {
             if (!tweet.retweeted_status
-                && isTweetExactMatch(tweet.text)
-                && tweet.user.screen_name !== 'CoronavirusBRBot') {
+                && tweet.user.screen_name !== 'CoronavirusBrB1') {
 
-                console.log(tweet.text);
-                sendReply(tweet);
+                let name = tweet.user.screen_name;
+                let nameId = tweet.id_str;
+
+                let reply = `Bip, bop... testando detecção de mention. Mensagem enviada por ${name} às ${moment(new Date().format('hh:mm'))}`;
+
+                let params = {
+                    status: reply,
+                    in_reply_to_status_id: nameId
+                };
+
+                T.post('statuses/update', params, (err, data, response) => {
+                    if (err !== undefined) {
+                        console.log(err);
+                    } else {
+                        console.log(`Tweeted ${params.status}`);    
+                    }
+                })
+
+                // console.log(tweet.text);
+                // sendReply(tweet);
             }
         });
     }
@@ -39,19 +56,8 @@ function onAuthenticated (err) {
 
 function sendReply (tweet) {
     let screenName = tweet.user.screen_name;
-    let regex = /{(\s*)\w+(\s*)}/gi;
+    let uf = tweet.text.trim().slice(18, 20).toUpperCase();
 
-    if (!tweet.text.match(regex)) {
-        console.log('Someone replied to our bot but the command was not recognized.')
-        return false
-    }
-
-    let uf = tweet.text.match(regex)[0]
-                .replace(/{\s+|\s+}/g, '')
-                .replace(/({|})/g, '')
-                .trim()
-                .toUpperCase();
-    
     if (config.states.includes(uf)) {
         axios.get(`https://covid19-brazil-api.now.sh/api/report/v1/brazil/uf/${uf}`)
             .then(response => {
@@ -63,7 +69,7 @@ function sendReply (tweet) {
                 }, onTweeted);
             })
             .catch(err => console.log(err));
-    } else if (uf === 'BRASIL' || uf === 'BRAZIL') {
+    } else {
         axios.get('https://covid19-brazil-api.now.sh/api/report/v1/brazil')
             .then(response => {
                 let lastUpdate = moment(response.data.data.updated_at).fromNow();
