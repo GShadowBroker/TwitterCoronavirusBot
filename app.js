@@ -5,7 +5,7 @@ const Twit = require('twit');
 const config = require('./config');
 const axios = require('axios');
 const moment = require('moment');
-require('moment/locale/pt-BR');
+require('./node_modules/moment/locale/pt-br');
 const port = 3000;
 
 const app = express();
