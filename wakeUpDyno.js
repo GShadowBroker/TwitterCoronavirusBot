@@ -7,7 +7,7 @@ function wakeUpDyno (url, interval=1200000) {
     console.log(`Scheduling wake up call to ${interval / 60 / 1000} minutes`);
     setTimeout(() => {
         axios.get(url)
-            .get(() => console.log('Hey! Wake up!'))
+            .then(() => console.log('Hey! Wake up!'))
             .catch(err => console.log(`Ooops, something went wrong. Error: ${err}`))
             .finally(() => {
                 wakeUpDyno(url, interval);

@@ -54,7 +54,7 @@ function sendReply (tweet) {
                 .toUpperCase();
     
     if (config.states.includes(uf)) {
-        axios.get(`https://covid19-brazil-api.now.sh/api/report/v1/brazil/uf/${uf}`)
+        return axios.get(`https://covid19-brazil-api.now.sh/api/report/v1/brazil/uf/${uf}`)
             .then(response => {
                 let lastUpdate = moment(response.data.datetime).fromNow();
                 let msg = `@${screenName} Em ${response.data.state} há atualmente ${response.data.cases} casos confirmados, ${response.data.suspects} casos suspeitos e ${response.data.deaths} mortes. Última vez atualizado: ${lastUpdate}.`;
@@ -65,7 +65,7 @@ function sendReply (tweet) {
             })
             .catch(err => console.log(err));
     } else if (uf === 'BRASIL' || uf === 'BRAZIL') {
-        axios.get('https://covid19-brazil-api.now.sh/api/report/v1/brazil')
+        return axios.get('https://covid19-brazil-api.now.sh/api/report/v1/brazil')
             .then(response => {
                 let lastUpdate = moment(response.data.data.updated_at).fromNow();
                 let msg = `@${screenName} No Brasil há atualmente ${response.data.data.confirmed} casos confirmados, ${response.data.data.deaths} mortes e ${response.data.data.recovered} recuperados. Última vez atualizado: ${lastUpdate}.`;
