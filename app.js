@@ -6,7 +6,7 @@ const config = require('./config');
 const axios = require('axios');
 const moment = require('moment');
 require('./node_modules/moment/locale/pt-br');
-const port = 3000;
+const port = process.env.PORT || 8080;
 
 const app = express();
 
